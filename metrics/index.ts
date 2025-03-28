@@ -184,30 +184,30 @@ export const initMetrics = (prefix: string) => {
 
     metricAppPidsCpuLast = new client.Gauge({
         name: `${prefix}_${METRIC_APP_PIDS_CPU}`,
-        help: 'Show current (last) usage CPU for every app instance',
+        help: 'Show current (last) usage CPU for every app process',
         registers: [registry],
-        labelNames: ['app', 'instance'],
+        labelNames: ['app', 'process'],
     });
 
     metricAppPidsCpuThreshold = new client.Gauge({
         name: `${prefix}_${METRIC_APP_PIDS_CPU_THRESHOLD}`,
-        help: 'Show average CPU for every app instance to detect autoscale if module exists',
+        help: 'Show average CPU for every app process to detect autoscale if module exists',
         registers: [registry],
-        labelNames: ['app', 'instance'],
+        labelNames: ['app', 'process'],
     });
 
     metricAppRestartCount = new client.Gauge({
         name: `${prefix}_${METRIC_APP_RESTART_COUNT}`,
         help: 'Show restart count of the app',
         registers: [registry],
-        labelNames: ['app', 'instance'],
+        labelNames: ['app', 'process'],
     });
 
     metricAppPidsMemory = new client.Gauge({
         name: `${prefix}_${METRIC_APP_PIDS_MEMORY}`,
-        help: 'Show current usage memory for every app instance',
+        help: 'Show current usage memory for every app process',
         registers: [registry],
-        labelNames: ['app', 'instance'],
+        labelNames: ['app', 'process'],
     });
 };
 
@@ -217,7 +217,7 @@ export const initDynamicGaugeMetricClients = (metrics: { key: string; descriptio
             name: `${currentPrefix}_${entry.key}`,
             help: entry.description,
             registers: [registry],
-            labelNames: ['app', 'instance'],
+            labelNames: ['app', 'process'],
         });
     });
 };
@@ -245,13 +245,13 @@ export const deletePromAppMetrics = (appName: string, instances: number[]) => {
 
 export const deletePromAppInstancesMetrics = (appName: string, instances: number[]) => {
     instances.forEach((pmId) => {
-        metricAppPidsCpuLast?.remove({ app: appName, instance: pmId });
-        metricAppPidsCpuThreshold?.remove({ app: appName, instance: pmId });
-        metricAppRestartCount?.remove({ app: appName, instance: pmId });
-        metricAppPidsMemory?.remove({ app: appName, instance: pmId });
+        metricAppPidsCpuLast?.remove({ app: appName, process: pmId });
+        metricAppPidsCpuThreshold?.remove({ app: appName, process: pmId });
+        metricAppRestartCount?.remove({ app: appName, process: pmId });
+        metricAppPidsMemory?.remove({ app: appName, process: pmId });
 
         for (const [, entry] of Object.entries(dynamicGaugeMetricClients)) {
-            entry?.remove({ app: appName, instance: pmId });
+            entry?.remove({ app: appName, process: pmId });
         }
     });
 };

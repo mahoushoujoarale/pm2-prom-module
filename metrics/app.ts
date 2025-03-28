@@ -9,7 +9,7 @@ type IAppPidMetric = Record<string, IMetric>;
 type IAppNameMetric = Record<string, IAppPidMetric>;
 const dynamicAppMetrics: { [key: string]: IAppNameMetric } = {};
 
-const DEFAULT_LABELS = ['app', 'instance', 'ksn', 'stage', 'version', 'pod', 'host', 'az', 'paz'];
+const DEFAULT_LABELS = ['app', 'process', 'ksn', 'stage', 'version', 'pod', 'host', 'az', 'paz'];
 
 const parseLabels = (values: IMetric['values']) => {
     const labels = new Set<string>();
@@ -104,7 +104,7 @@ const createRegistryMetrics = (registry: client.Registry) => {
 
                     const defaultLabels: Record<string, string | number> = {
                         app: appName,
-                        instance: pm2id,
+                        process: pm2id,
                         ...getDefaultLabels()
                     };
 

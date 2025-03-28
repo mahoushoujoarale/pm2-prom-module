@@ -91,7 +91,7 @@ const detectActiveApps = () => {
             mapAppPids[appName].restartsSum =
                 mapAppPids[appName].restartsSum + Number(pm2_env.restart_time || 0);
 
-            // Get the last app instance status
+            // Get the last app process status
             mapAppPids[appName].status = appInstance.pm2_env?.status;
 
             if (appInstance.pid && appInstance.pm_id) {
@@ -323,26 +323,26 @@ function processWorkingApp(workingApp: App) {
     metricAppStatus?.set(labels, workingApp.getStatus());
 
     workingApp.getCurrentPidsCpu().forEach((entry) => {
-        metricAppPidsCpuLast?.set({ ...labels, instance: entry.pmId }, entry.value);
+        metricAppPidsCpuLast?.set({ ...labels, process: entry.pmId }, entry.value);
     });
 
     workingApp.getCpuThreshold().forEach((entry) => {
-        metricAppPidsCpuThreshold?.set({ ...labels, instance: entry.pmId }, entry.value);
+        metricAppPidsCpuThreshold?.set({ ...labels, process: entry.pmId }, entry.value);
     });
 
     workingApp.getCurrentPidsMemory().forEach((entry) => {
-        metricAppPidsMemory?.set({ ...labels, instance: entry.pmId }, entry.value);
+        metricAppPidsMemory?.set({ ...labels, process: entry.pmId }, entry.value);
     });
 
     workingApp.getRestartCount().forEach((entry) => {
-        metricAppRestartCount?.set({ ...labels, instance: entry.pmId }, entry.value);
+        metricAppRestartCount?.set({ ...labels, process: entry.pmId }, entry.value);
     });
 
     workingApp.getPidPm2Metrics().forEach((entry) => {
         Object.keys(entry.metrics).forEach((metricKey) => {
             if (dynamicGaugeMetricClients[metricKey]) {
                 dynamicGaugeMetricClients[metricKey].set(
-                    { ...labels, instance: entry.pmId },
+                    { ...labels, process: entry.pmId },
                     entry.metrics[metricKey]
                 );
             }

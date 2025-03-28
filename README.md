@@ -23,13 +23,13 @@ This module `@ks-infra/pm2-prom-module` allows you to collect all PM2 monitoring
 -   Average using memory for every app
 -   Total using memory for all instances of a app
 -   Average using CPU for every app
--   Current CPU usage for every app instance
--   Restarts count for every app instance
+-   Current CPU usage for every app process
+-   Restarts count for every app process
 -   Uptime for every app
 -   App status (0-unknown, 1-running, 2-pending, 3-stopped, 4-errored)
 -   Memory and CPU limits when run PM2 in docker container
 
-Also collect all PM2 default metrics for every instance:
+Also collect all PM2 default metrics for every process:
 
 -   Used Heap Size
 -   Heap Usage
@@ -112,7 +112,7 @@ app.get('/*', async (req: AppFastifyRequest, res) => {
 
 Plugin automatically collect metrics from all running instances of apps and all metrics will be available on the same endpoint with `@ks-infra/pm2-prom-module`. Have a look on an example below.
 
-Also you can add any of your own labels for any of `prom-client` counters, but `app`, and `instance` are reserved for plugin and will be overwritten.
+Also you can add any of your own labels for any of `prom-client` counters, but `app`, and `process` are reserved for plugin and will be overwritten.
 
 Since version `2.1.0` module support aggregation data for all instances by default.
 But you can disable it with module configuration.
@@ -159,13 +159,13 @@ pm2_app_total_memory{app="app"} 121626624
 
 # HELP pm2_event_loop_latency_p95 Event Loop Latency p95. Unit "ms"
 # TYPE pm2_event_loop_latency_p95 gauge
-pm2_event_loop_latency_p95{app="app",instance="13"} 2.55
-pm2_event_loop_latency_p95{app="app",instance="14"} 2.48
+pm2_event_loop_latency_p95{app="app",process="13"} 2.55
+pm2_event_loop_latency_p95{app="app",process="14"} 2.48
 
 # HELP nodejs_app_requests_total Show total request count
 # TYPE nodejs_app_requests_total counter
-nodejs_app_requests_total{app="app",instance="13"} 10
-nodejs_app_requests_total{app="app",instance="14"} 17
+nodejs_app_requests_total{app="app",process="13"} 10
+nodejs_app_requests_total{app="app",process="14"} 17
 ```
 
 ## FAQ
@@ -179,6 +179,9 @@ pm2 restart @ks-infra/pm2-prom-module --max-memory-restart=3000M
 ```
 
 ## Change log
+### Version 2.6.3
+-   Change `instance` label to `process`
+
 ### Version 2.6.2
 -   Fix az and paz label error
 
