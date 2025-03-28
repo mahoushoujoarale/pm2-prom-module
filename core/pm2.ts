@@ -30,7 +30,7 @@ import { getLogger } from '../utils/logger';
 type IPidsData = Record<number, IPidDataInput>;
 type IAppData = Record<string, { pids: number[]; restartsSum: number; status?: Pm2Env['status'] }>;
 
-const WORKER_CHECK_INTERVAL = 1000;
+const WORKER_CHECK_INTERVAL = 15000;
 const SHOW_STAT_INTERVAL = 10000;
 
 const APPS: { [key: string]: App } = {};

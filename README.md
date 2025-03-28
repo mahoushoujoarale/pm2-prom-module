@@ -63,10 +63,9 @@ Default settings:
 -   `port` Connection port for Prometheus agent. (default to `9988`)
 -   `hostname` Listen address. (default to `0.0.0.0`)
 -   `unix_socket_path` Set if you want to listen on unix socket (default to `` - empty string)
--   `service_name` Default label for registry (default to `` - empty string)
 -   `debug` Enable debug mode to show logs from the module (default to `false`)
 -   `aggregate_app_metrics` Enable to aggregate metrics from app instances (default to `true`)
--   `app_check_interval` Interval to check available apps and collect statistic (default to `1000`)
+-   `app_check_interval` Interval to check available apps and collect statistic (default to `15000`)
 -   `prefix` Prefix for metrics (default to `pm2`)
 
 To modify the module config values you can use the following commands:
@@ -75,7 +74,6 @@ To modify the module config values you can use the following commands:
 pm2 set pm2-prom-module:debug true
 pm2 set pm2-prom-module:port 10801
 pm2 set pm2-prom-module:hostname 127.0.0.1
-pm2 set pm2-prom-module:service_name MyApp
 pm2 set pm2-prom-module:aggregate_app_metrics true
 pm2 set pm2-prom-module:app_check_interval 5000
 ```
@@ -128,8 +126,8 @@ Aggregated data from all running apps:
 ```bash
 # HELP nodejs_app_requests_total Show total request count
 # TYPE nodejs_app_requests_total counter
-nodejs_app_requests_total{app="app",serviceName="MyApp"} 8
-nodejs_app_requests_total{app="app2",serviceName="MyApp"} 3
+nodejs_app_requests_total{app="app"} 8
+nodejs_app_requests_total{app="app2"} 3
 ```
 
 ## Example output
@@ -137,37 +135,37 @@ nodejs_app_requests_total{app="app2",serviceName="MyApp"} 3
 ```bash
 # HELP pm2_free_memory Show available host free memory
 # TYPE pm2_free_memory gauge
-pm2_free_memory{serviceName="my-app"} 377147392
+pm2_free_memory{} 377147392
 
 # HELP pm2_cpu_count Show available CPUs count
 # TYPE pm2_cpu_count gauge
-pm2_cpu_count{serviceName="my-app"} 4
+pm2_cpu_count{} 4
 
 # HELP pm2_available_apps Show available apps to monitor
 # TYPE pm2_available_apps gauge
-pm2_available_apps{serviceName="my-app"} 1
+pm2_available_apps{} 1
 
 # HELP pm2_app_instances Show app instances count
 # TYPE pm2_app_instances gauge
-pm2_app_instances{app="app",serviceName="my-app"} 2
+pm2_app_instances{app="app"} 2
 
 # HELP pm2_app_average_memory Show average using memory of an app
 # TYPE pm2_app_average_memory gauge
-pm2_app_average_memory{app="app",serviceName="my-app"} 60813927
+pm2_app_average_memory{app="app"} 60813927
 
 # HELP pm2_app_total_memory Show total using memory of an app
 # TYPE pm2_app_total_memory gauge
-pm2_app_total_memory{app="app",serviceName="my-app"} 121626624
+pm2_app_total_memory{app="app"} 121626624
 
 # HELP pm2_event_loop_latency_p95 Event Loop Latency p95. Unit "ms"
 # TYPE pm2_event_loop_latency_p95 gauge
-pm2_event_loop_latency_p95{app="app",instance="13",serviceName="my-app"} 2.55
-pm2_event_loop_latency_p95{app="app",instance="14",serviceName="my-app"} 2.48
+pm2_event_loop_latency_p95{app="app",instance="13"} 2.55
+pm2_event_loop_latency_p95{app="app",instance="14"} 2.48
 
 # HELP nodejs_app_requests_total Show total request count
 # TYPE nodejs_app_requests_total counter
-nodejs_app_requests_total{app="app",instance="13",serviceName="my-app"} 10
-nodejs_app_requests_total{app="app",instance="14",serviceName="my-app"} 17
+nodejs_app_requests_total{app="app",instance="13"} 10
+nodejs_app_requests_total{app="app",instance="14"} 17
 ```
 
 ## FAQ

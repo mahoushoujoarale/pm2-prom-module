@@ -4,24 +4,35 @@ import { createServer, ServerResponse, IncomingMessage } from 'http';
 import net from 'net';
 import fs from 'fs';
 import { startPm2Connect } from './core/pm2';
-import { initLogger } from './utils/logger';
+import { getLogger, initLogger } from './utils/logger';
 import { initMetrics, combineAllRegistries } from './metrics';
 import { getDefaultLabels } from './utils/labels';
+import { Kess } from '@infra-node/kess';
 
 const DEFAULT_PREFIX = 'ks_infra';
 
 const startPromServer = (prefix: string, moduleConfig: IConfig) => {
     initMetrics(prefix);
 
-    const serviceName = moduleConfig.service_name;
     const port = Number(moduleConfig.port);
     const hostname = moduleConfig.hostname;
     const unixSocketPath = moduleConfig.unix_socket_path;
 
+    const logger = getLogger();
+
+    const kess = new Kess();
+    kess.register(process.env.KWS_SERVICE_NAME ?? 'unknown', port, { schema: 'http' })
+      .then((res) => {
+        if (res.code) {
+          logger.info(`KESS 注册失败: ${res.description}`);
+        } else {
+          logger.info(`KESS 注册成功: ${res.description}`);
+        }
+      })
+
     const promServer = createServer(async (_req: IncomingMessage, res: ServerResponse) => {
         const mergedRegistry = combineAllRegistries(Boolean(moduleConfig.aggregate_app_metrics));
         mergedRegistry.setDefaultLabels({ 
-            serviceName,
             ...getDefaultLabels()
         });
 
@@ -103,7 +114,6 @@ pmx.initModule(
                     moduleConfig.aggregate_app_metrics ? 'Enabled' : 'Disabled',
                 ],
                 ['Port', moduleConfig.port],
-                ['Service name', moduleConfig.service_name ? moduleConfig.service_name : `N/A`],
                 ['Check interval', `${moduleConfig.app_check_interval} ms`],
                 ['Prefix', moduleConfig.prefix ?? DEFAULT_PREFIX],
             ],

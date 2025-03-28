@@ -5,3 +5,4 @@ dist
 *.js
 !.prettierrx.js
 test.sh
+logs
