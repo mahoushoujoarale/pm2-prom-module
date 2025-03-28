@@ -3,12 +3,13 @@ import { AppResponse, IMetric, MetricType } from '../types';
 import { getLogger } from '../utils/logger';
 import { IHistogram } from './prom/histogram';
 import { ISummary } from './prom/summary';
+import { getDefaultLabels } from '../utils/labels';
 
 type IAppPidMetric = Record<string, IMetric>;
 type IAppNameMetric = Record<string, IAppPidMetric>;
 const dynamicAppMetrics: { [key: string]: IAppNameMetric } = {};
 
-const DEFAULT_LABELS = ['app', 'instance'];
+const DEFAULT_LABELS = ['app', 'instance', 'ksn', 'stage', 'version', 'pod', 'host', 'az', 'paz'];
 
 const parseLabels = (values: IMetric['values']) => {
     const labels = new Set<string>();
@@ -104,6 +105,7 @@ const createRegistryMetrics = (registry: client.Registry) => {
                     const defaultLabels: Record<string, string | number> = {
                         app: appName,
                         instance: pm2id,
+                        ...getDefaultLabels()
                     };
 
                     // Fill data

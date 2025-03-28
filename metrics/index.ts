@@ -9,6 +9,7 @@ import {
     getUsedMemory,
     hasDockerLimitFiles,
 } from '../utils/docker';
+import { getDefaultLabels } from '../utils/labels';
 
 import { getAppRegistry } from './app';
 
@@ -51,6 +52,10 @@ export const dynamicGaugeMetricClients: { [key: string]: client.Gauge } = {};
 // Metrics
 export const initMetrics = (prefix: string) => {
     currentPrefix = prefix;
+
+    // Set default labels for all metrics
+    const defaultLabels = getDefaultLabels();
+    registry.setDefaultLabels(defaultLabels);
 
     new client.Gauge({
         name: `${prefix}_${METRIC_FREE_MEMORY}`,

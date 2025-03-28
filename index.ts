@@ -6,8 +6,9 @@ import fs from 'fs';
 import { startPm2Connect } from './core/pm2';
 import { initLogger } from './utils/logger';
 import { initMetrics, combineAllRegistries } from './metrics';
+import { getDefaultLabels } from './utils/labels';
 
-const DEFAULT_PREFIX = 'pm2';
+const DEFAULT_PREFIX = 'ks_infra';
 
 const startPromServer = (prefix: string, moduleConfig: IConfig) => {
     initMetrics(prefix);
@@ -19,7 +20,10 @@ const startPromServer = (prefix: string, moduleConfig: IConfig) => {
 
     const promServer = createServer(async (_req: IncomingMessage, res: ServerResponse) => {
         const mergedRegistry = combineAllRegistries(Boolean(moduleConfig.aggregate_app_metrics));
-        mergedRegistry.setDefaultLabels({ serviceName });
+        mergedRegistry.setDefaultLabels({ 
+            serviceName,
+            ...getDefaultLabels()
+        });
 
         res.setHeader('Content-Type', mergedRegistry.contentType);
         res.end(await mergedRegistry.metrics());
