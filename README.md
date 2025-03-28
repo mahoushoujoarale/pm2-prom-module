@@ -1,4 +1,4 @@
-# PM2-Prom-Module [![npm version](https://badge.fury.io/js/pm2-prom-module.svg)](https://www.npmjs.com/package/pm2-prom-module)
+# PM2-Prom-Module [![npm version](https://badge.fury.io/js/@ks-infra/pm2-prom-module.svg)](https://www.npmjs.com/package/@ks-infra/pm2-prom-module)
 
 PM2 module to help collect applications statistic and send it to Prometheus server
 
@@ -12,7 +12,7 @@ Also if you use [PM2-AutoScale](https://www.npmjs.com/package/pm2-autoscale) mod
 
 ## Solution
 
-This module `pm2-prom-module` allows you to collect all PM2 monitoring data such as `CPU Usage`, `Memory Usage` and etc for your every applications and run HTTP server inside module to collect all metrics.
+This module `@ks-infra/pm2-prom-module` allows you to collect all PM2 monitoring data such as `CPU Usage`, `Memory Usage` and etc for your every applications and run HTTP server inside module to collect all metrics.
 
 ### PM collected statistic
 
@@ -45,7 +45,7 @@ Also collect all PM2 default metrics for every instance:
 ## Install
 
 ```bash
-pm2 install pm2-prom-module
+pm2 install @ks-infra/pm2-prom-module
 ```
 
 After installation module creates HTTPS server on address `http://localhost:9988/` and servers responds with Prometheus metrics
@@ -53,7 +53,7 @@ After installation module creates HTTPS server on address `http://localhost:9988
 ## Uninstall
 
 ```bash
-pm2 uninstall pm2-prom-module
+pm2 uninstall @ks-infra/pm2-prom-module
 ```
 
 ## Configuration
@@ -66,29 +66,29 @@ Default settings:
 -   `debug` Enable debug mode to show logs from the module (default to `false`)
 -   `aggregate_app_metrics` Enable to aggregate metrics from app instances (default to `true`)
 -   `app_check_interval` Interval to check available apps and collect statistic (default to `15000`)
--   `prefix` Prefix for metrics (default to `pm2`)
+-   `prefix` Prefix for metrics (default to `ks_infra`)
 
 To modify the module config values you can use the following commands:
 
 ```bash
-pm2 set pm2-prom-module:debug true
-pm2 set pm2-prom-module:port 10801
-pm2 set pm2-prom-module:hostname 127.0.0.1
-pm2 set pm2-prom-module:aggregate_app_metrics true
-pm2 set pm2-prom-module:app_check_interval 5000
+pm2 set @ks-infra/pm2-prom-module:debug true
+pm2 set @ks-infra/pm2-prom-module:port 10801
+pm2 set @ks-infra/pm2-prom-module:hostname 127.0.0.1
+pm2 set @ks-infra/pm2-prom-module:aggregate_app_metrics true
+pm2 set @ks-infra/pm2-prom-module:app_check_interval 5000
 ```
 
 ## How to collect your own metrics from apps
 
 As of plugin version `2.0.0`, it enables the collection of metrics from all currently running applications in PM2, presenting them in a unified output alongside other PM2 metrics.
 
-To communicate between PM2 nodejs application and `pm2-prom-module`you can use [pm2-prom-module-client](https://www.npmjs.com/package/pm2-prom-module-client) which is using process messaging bus between module and an app.
+To communicate between PM2 nodejs application and `@ks-infra/pm2-prom-module`you can use [@ks-infra/pm2-prom-module-client](https://www.npmjs.com/package/@ks-infra/pm2-prom-module-client) which is using process messaging bus between module and an app.
 
 Here an example how to use it:
 
 ```typescript
 import client from 'prom-client';
-import { initMetrics } from 'pm2-prom-module-client';
+import { initMetrics } from '@ks-infra/pm2-prom-module-client';
 
 const registry = new client.Registry();
 const PREFIX = `nodejs_app_`;
@@ -110,7 +110,7 @@ app.get('/*', async (req: AppFastifyRequest, res) => {
 });
 ```
 
-Plugin automatically collect metrics from all running instances of apps and all metrics will be available on the same endpoint with `pm2-prom-module`. Have a look on an example below.
+Plugin automatically collect metrics from all running instances of apps and all metrics will be available on the same endpoint with `@ks-infra/pm2-prom-module`. Have a look on an example below.
 
 Also you can add any of your own labels for any of `prom-client` counters, but `app`, and `instance` are reserved for plugin and will be overwritten.
 
@@ -118,7 +118,7 @@ Since version `2.1.0` module support aggregation data for all instances by defau
 But you can disable it with module configuration.
 
 ```bash
-pm2 set pm2-prom-module:aggregate_app_metrics false
+pm2 set @ks-infra/pm2-prom-module:aggregate_app_metrics false
 ```
 
 Aggregated data from all running apps:
@@ -175,7 +175,7 @@ nodejs_app_requests_total{app="app",instance="14"} 17
 You can install plugin and restart it with the command:
 
 ```
-pm2 restart pm2-prom-module --max-memory-restart=3000M
+pm2 restart @ks-infra/pm2-prom-module --max-memory-restart=3000M
 ```
 
 ## Change log
@@ -190,7 +190,7 @@ pm2 restart pm2-prom-module --max-memory-restart=3000M
 -   Add new metric `prefix` Prefix for metrics (default to `pm2`)
 
 ```bash
-pm2 set pm2-prom-module:prefix my_metrics
+pm2 set @ks-infra/pm2-prom-module:prefix my_metrics
 ```
 
 ### Version 2.5.2
