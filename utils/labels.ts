@@ -1,6 +1,5 @@
 export const getDefaultLabels = () => {
-    const az = process.env.KWS_AZ || 'unknown';
-    const paz = process.env.KWS_PAZ || 'unknown';
+    const [, az, paz] = process.env.KCS_DEPLOY_NAME?.split('-') ?? [];
     
     return {
         ksn: process.env.KWS_SERVICE_NAME ?? 'unknown',

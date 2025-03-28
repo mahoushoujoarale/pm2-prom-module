@@ -179,6 +179,13 @@ pm2 restart @ks-infra/pm2-prom-module --max-memory-restart=3000M
 ```
 
 ## Change log
+### Version 2.6.2
+-   Fix az and paz label error
+
+### Version 2.6.1
+-   Add Default labels for kuaishou
+-   Add Kess for Service discovery
+-   Change npm config for @ks-infra
 
 ### Version 2.6.0
 
