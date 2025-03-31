@@ -62,7 +62,6 @@ Default settings:
 
 -   `port` Connection port for Prometheus agent. (default to `9988`)
 -   `hostname` Listen address. (default to `0.0.0.0`)
--   `unix_socket_path` Set if you want to listen on unix socket (default to `` - empty string)
 -   `debug` Enable debug mode to show logs from the module (default to `false`)
 -   `aggregate_app_metrics` Enable to aggregate metrics from app instances (default to `true`)
 -   `app_check_interval` Interval to check available apps and collect statistic (default to `15000`)

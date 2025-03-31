@@ -1,7 +1,6 @@
 type IConfig = {
     debug: boolean;
     port: string;
-    unix_socket_path: string;
     hostname: string;
     aggregate_app_metrics: boolean;
     app_check_interval: number;

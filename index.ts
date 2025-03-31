@@ -16,7 +16,6 @@ const startPromServer = (prefix: string, moduleConfig: IConfig) => {
 
     const port = Number(moduleConfig.port);
     const hostname = moduleConfig.hostname;
-    const unixSocketPath = moduleConfig.unix_socket_path;
 
     const logger = getLogger();
 
@@ -54,31 +53,8 @@ const startPromServer = (prefix: string, moduleConfig: IConfig) => {
 
         console.log(`Metrics server is available on ${listenString}`);
     };
-
-    if (unixSocketPath) {
-        promServer.on('error', function (promServerError: ErrnoException) {
-            if (promServerError.code == 'EADDRINUSE') {
-                console.log(`Listen error: "${promServerError.message}". Try to remove socket...`);
-                const clientSocket = new net.Socket();
-                clientSocket.on('error', function (clientSocketError: ErrnoException) {
-                    if (clientSocketError.code == 'ECONNREFUSED') {
-                        console.log(`Remove old socket ${unixSocketPath}`);
-                        fs.unlinkSync(unixSocketPath);
-                        promServer.listen(unixSocketPath);
-                    }
-                });
-
-                clientSocket.connect({ path: unixSocketPath }, function () {
-                    console.log('Server running, giving up...');
-                    process.exit();
-                });
-            }
-        });
-
-        promServer.listen(unixSocketPath, listenCallback);
-    } else {
-        promServer.listen(port, hostname, listenCallback);
-    }
+    
+    promServer.listen(port, hostname, listenCallback);
 };
 
 pmx.initModule(
