@@ -45,20 +45,16 @@ export let metricAppUptime: client.Gauge | undefined;
 export let metricAppPidsMemory: client.Gauge | undefined;
 export let metricAppStatus: client.Gauge | undefined;
 
-let currentPrefix = '';
-
 export const dynamicGaugeMetricClients: { [key: string]: client.Gauge } = {};
 
 // Metrics
-export const initMetrics = (prefix: string) => {
-    currentPrefix = prefix;
-
+export const initMetrics = () => {
     // Set default labels for all metrics
     const defaultLabels = getDefaultLabels();
     registry.setDefaultLabels(defaultLabels);
 
     new client.Gauge({
-        name: `${prefix}_${METRIC_FREE_MEMORY}`,
+        name: `${METRIC_FREE_MEMORY}`,
         help: 'Show available host free memory (System OS)',
         collect() {
             this.set(os.freemem());
@@ -67,7 +63,7 @@ export const initMetrics = (prefix: string) => {
     });
 
     new client.Gauge({
-        name: `${prefix}_${METRIC_AVAILABLE_CPU}`,
+        name: `${METRIC_AVAILABLE_CPU}`,
         help: 'Show available CPUs count (System OS)',
         collect() {
             this.set(getCpuCount());
@@ -79,7 +75,7 @@ export const initMetrics = (prefix: string) => {
     hasDockerLimitFiles()
         .then(() => {
             new client.Gauge({
-                name: `${prefix}_${METRIC_TOTAL_MEMORY_CONTAINER}`,
+                name: `${METRIC_TOTAL_MEMORY_CONTAINER}`,
                 help: 'Available memory in container',
                 async collect() {
                     try {
@@ -91,7 +87,7 @@ export const initMetrics = (prefix: string) => {
             });
 
             new client.Gauge({
-                name: `${prefix}_${METRIC_FREE_MEMORY_CONTAINER}`,
+                name: `${METRIC_FREE_MEMORY_CONTAINER}`,
                 help: 'Free memory in container',
                 async collect() {
                     try {
@@ -103,7 +99,7 @@ export const initMetrics = (prefix: string) => {
             });
 
             new client.Gauge({
-                name: `${prefix}_${METRIC_USED_MEMORY_CONTAINER}`,
+                name: `${METRIC_USED_MEMORY_CONTAINER}`,
                 help: 'Used memory in container',
                 async collect() {
                     try {
@@ -115,7 +111,7 @@ export const initMetrics = (prefix: string) => {
             });
 
             new client.Gauge({
-                name: `${prefix}_${METRIC_AVAILABLE_CPU_CONTAINER}`,
+                name: `${METRIC_AVAILABLE_CPU_CONTAINER}`,
                 help: 'Available CPUs limit in container',
                 async collect() {
                     try {
@@ -131,7 +127,7 @@ export const initMetrics = (prefix: string) => {
         });
 
     metricAvailableApps = new client.Gauge({
-        name: `${prefix}_${METRIC_AVAILABLE_APPS}`,
+        name: `${METRIC_AVAILABLE_APPS}`,
         help: 'Show available apps to monitor',
         registers: [registry],
     });
@@ -139,42 +135,42 @@ export const initMetrics = (prefix: string) => {
     // Specific app metrics
 
     metricAppInstances = new client.Gauge({
-        name: `${prefix}_${METRIC_APP_INSTANCES}`,
+        name: `${METRIC_APP_INSTANCES}`,
         help: 'Show app instances count',
         registers: [registry],
         labelNames: ['app'],
     });
 
     metricAppAverageMemory = new client.Gauge({
-        name: `${prefix}_${METRIC_APP_AVERAGE_MEMORY}`,
+        name: `${METRIC_APP_AVERAGE_MEMORY}`,
         help: 'Show average using memory of an app',
         registers: [registry],
         labelNames: ['app'],
     });
 
     metricAppTotalMemory = new client.Gauge({
-        name: `${prefix}_${METRIC_APP_TOTAL_MEMORY}`,
+        name: `${METRIC_APP_TOTAL_MEMORY}`,
         help: 'Show total using memory of an app',
         registers: [registry],
         labelNames: ['app'],
     });
 
     metricAppAverageCpu = new client.Gauge({
-        name: `${prefix}_${METRIC_APP_AVERAGE_CPU}`,
+        name: `${METRIC_APP_AVERAGE_CPU}`,
         help: 'Show average app cpu usage',
         registers: [registry],
         labelNames: ['app'],
     });
 
     metricAppUptime = new client.Gauge({
-        name: `${prefix}_${METRIC_APP_UPTIME}`,
+        name: `${METRIC_APP_UPTIME}`,
         help: 'Show app uptime in seconds',
         registers: [registry],
         labelNames: ['app'],
     });
 
     metricAppStatus = new client.Gauge({
-        name: `${prefix}_${METRIC_APP_STATUS}`,
+        name: `${METRIC_APP_STATUS}`,
         help: 'Current App status. (0-unknown,1-running,2-pending,3-stopped,4-errored)',
         registers: [registry],
         labelNames: ['app'],
@@ -183,28 +179,28 @@ export const initMetrics = (prefix: string) => {
     // Metrics with instances
 
     metricAppPidsCpuLast = new client.Gauge({
-        name: `${prefix}_${METRIC_APP_PIDS_CPU}`,
+        name: `${METRIC_APP_PIDS_CPU}`,
         help: 'Show current (last) usage CPU for every app process',
         registers: [registry],
         labelNames: ['app', 'process'],
     });
 
     metricAppPidsCpuThreshold = new client.Gauge({
-        name: `${prefix}_${METRIC_APP_PIDS_CPU_THRESHOLD}`,
+        name: `${METRIC_APP_PIDS_CPU_THRESHOLD}`,
         help: 'Show average CPU for every app process to detect autoscale if module exists',
         registers: [registry],
         labelNames: ['app', 'process'],
     });
 
     metricAppRestartCount = new client.Gauge({
-        name: `${prefix}_${METRIC_APP_RESTART_COUNT}`,
+        name: `${METRIC_APP_RESTART_COUNT}`,
         help: 'Show restart count of the app',
         registers: [registry],
         labelNames: ['app', 'process'],
     });
 
     metricAppPidsMemory = new client.Gauge({
-        name: `${prefix}_${METRIC_APP_PIDS_MEMORY}`,
+        name: `${METRIC_APP_PIDS_MEMORY}`,
         help: 'Show current usage memory for every app process',
         registers: [registry],
         labelNames: ['app', 'process'],
@@ -214,7 +210,7 @@ export const initMetrics = (prefix: string) => {
 export const initDynamicGaugeMetricClients = (metrics: { key: string; description: string }[]) => {
     metrics.forEach((entry) => {
         dynamicGaugeMetricClients[entry.key] = new client.Gauge({
-            name: `${currentPrefix}_${entry.key}`,
+            name: `${entry.key}`,
             help: entry.description,
             registers: [registry],
             labelNames: ['app', 'process'],

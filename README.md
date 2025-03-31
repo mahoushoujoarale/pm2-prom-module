@@ -65,7 +65,6 @@ Default settings:
 -   `debug` Enable debug mode to show logs from the module (default to `false`)
 -   `aggregate_app_metrics` Enable to aggregate metrics from app instances (default to `true`)
 -   `app_check_interval` Interval to check available apps and collect statistic (default to `15000`)
--   `prefix` Prefix for metrics (default to `ks_infra`)
 
 To modify the module config values you can use the following commands:
 
@@ -90,10 +89,9 @@ import client from 'prom-client';
 import { initMetrics } from '@ks-infra/pm2-prom-module-client';
 
 const registry = new client.Registry();
-const PREFIX = `nodejs_app_`;
 
 const metricRequestCounter = new client.Counter({
-    name: `${PREFIX}request_counter`,
+    name: 'request_counter',
     help: 'Show total request count',
     registers: [registry],
 });

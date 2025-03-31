@@ -1,18 +1,14 @@
 // @ts-ignore
 import pmx from 'pmx';
 import { createServer, ServerResponse, IncomingMessage } from 'http';
-import net from 'net';
-import fs from 'fs';
 import { startPm2Connect } from './core/pm2';
 import { getLogger, initLogger } from './utils/logger';
 import { initMetrics, combineAllRegistries } from './metrics';
 import { getDefaultLabels } from './utils/labels';
 import { Kess } from '@infra-node/kess';
 
-const DEFAULT_PREFIX = 'ks_infra';
-
-const startPromServer = (prefix: string, moduleConfig: IConfig) => {
-    initMetrics(prefix);
+const startPromServer = (moduleConfig: IConfig) => {
+    initMetrics();
 
     const port = Number(moduleConfig.port);
     const hostname = moduleConfig.hostname;
@@ -79,7 +75,7 @@ pmx.initModule(
 
         initLogger({ isDebug: moduleConfig.debug });
         startPm2Connect(moduleConfig);
-        startPromServer(moduleConfig.prefix ?? DEFAULT_PREFIX, moduleConfig);
+        startPromServer(moduleConfig);
 
         pmx.configureModule({
             human_info: [
@@ -91,7 +87,6 @@ pmx.initModule(
                 ],
                 ['Port', moduleConfig.port],
                 ['Check interval', `${moduleConfig.app_check_interval} ms`],
-                ['Prefix', moduleConfig.prefix ?? DEFAULT_PREFIX],
             ],
         });
     }

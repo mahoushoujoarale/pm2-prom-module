@@ -31,8 +31,7 @@
         "hostname": "0.0.0.0",
         "debug": false,
         "aggregate_app_metrics": true,
-        "app_check_interval": 15000,
-        "prefix": "ks_infra"
+        "app_check_interval": 15000
     },
     "devDependencies": {
         "@types/node": "^18.19.50",
